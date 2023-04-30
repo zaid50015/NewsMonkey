@@ -32,10 +32,22 @@ export default class News extends Component {
       this.props.category
     )} - NewsMonkey`;
   }
-  
-  update = async () => {
+  update=async()=>{
+    console.log("update running")
+    this.setState({loading:true})
+    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=2805dbedb56f41e586314e1eab4b3fbb&page=${this.state.page}&pageSize=${this.state.pageSize}`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
 
-    console.log("Hello")
+    this.setState({
+      articles: parsedData.articles,
+      totalResults: parsedData.totalResults,
+      loading: false,
+    });
+  }
+  fetching = async () => {
+
+    console.log("fetching running")
    this.setState({
       page:this.state.page+1
    });
@@ -65,20 +77,20 @@ export default class News extends Component {
         <InfiniteScroll
           style={{ overflow: "hidden" }}
           dataLength={this.state.articles.length}
-          next={this.update}
+          next={this.fetching}
           hasMore={this.state.articles.length < this.state.totalResults}
           loader={<Loader />}
         >
             <div className="container">
             <div className="row">
              
-              {this.state.articles.map((element) => {
+              {this.state.articles.map((element,index) => {
                 return (
                    
-                  <div className="col-md-4 my-3" key={element.url}>
-                  
+                  <div className="col-md-4 my-3" key={index}>
+                
                     <NewsItem
-                      title={element.title}
+                      title={!element.title? "No title": element.title}
                       description={element.description}
                       imgUrl={element.urlToImage}
                       sourceUrl={element.url}
