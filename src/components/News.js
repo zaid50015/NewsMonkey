@@ -26,32 +26,35 @@ export default class News extends Component {
       articles: [],
       loading: true,
       page: 1,
-      totalResults:0
+      totalResults: 0,
     };
     document.title = `${this.capitalizeFirstLetter(
       this.props.category
     )} - NewsMonkey`;
   }
-  update=async()=>{
-    console.log("update running")
-    this.setState({loading:true})
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=2805dbedb56f41e586314e1eab4b3fbb&page=${this.state.page}&pageSize=${this.state.pageSize}`;
-    let data = await fetch(url);
-    let parsedData = await data.json();
 
+  async update() {
+    this.props.setProgress(10);
+    this.setState({ loading: true });
+    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apikey}&page=${this.state.page}&pageSize=${this.state.pageSize}`;
+    let data = await fetch(url);
+    this.props.setProgress(30);
+    let parsedData = await data.json();
+    this.props.setProgress(50);
+    this.props.setProgress(70);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
       loading: false,
     });
+    this.props.setProgress(100);
   }
-  fetching = async () => {
 
-    console.log("fetching running")
-   this.setState({
-      page:this.state.page+1
-   });
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=2805dbedb56f41e586314e1eab4b3fbb&page=${this.state.page}&pageSize=${this.state.pageSize}`;
+  fetching = async () => {
+    this.setState({
+      page: this.state.page + 1,
+    });
+    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apikey}&page=${this.state.page}&pageSize=${this.state.pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
 
@@ -61,10 +64,10 @@ export default class News extends Component {
       loading: false,
     });
   };
+
   async componentDidMount() {
-    console.log("cdm running")
     this.update();
-}
+  }
 
   render() {
     return (
@@ -81,16 +84,13 @@ export default class News extends Component {
           hasMore={this.state.articles.length < this.state.totalResults}
           loader={<Loader />}
         >
-            <div className="container">
+          <div className="container">
             <div className="row">
-             
-              {this.state.articles.map((element,index) => {
+              {this.state.articles.map((element, index) => {
                 return (
-                   
                   <div className="col-md-4 my-3" key={index}>
-                
                     <NewsItem
-                      title={!element.title? "No title": element.title}
+                      title={!element.title ? "No title" : element.title}
                       description={element.description}
                       imgUrl={element.urlToImage}
                       sourceUrl={element.url}
@@ -104,7 +104,6 @@ export default class News extends Component {
             </div>
           </div>
         </InfiniteScroll>
-      
       </>
     );
   }

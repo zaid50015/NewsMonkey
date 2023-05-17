@@ -4,7 +4,7 @@ export default class Loader extends Component {
   render() {
     return (
       <div className="text-center">
-        <span class="loader"></span>
+        <span className="loader"></span>
       </div>
     )
   }
