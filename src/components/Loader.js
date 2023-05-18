@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
+
 import './Loader.css'
-export default class Loader extends Component {
-  render() {
-    return (
-      <div className="text-center">
-        <span class="loader"></span>
-      </div>
-    )
-  }
+import React from 'react'
+
+const Loader=()=> {
+  return (
+    <div className="text-center">
+    <span className="loader"></span>
+  </div>
+  )
 }
+
+export default Loader
